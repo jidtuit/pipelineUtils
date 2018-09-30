@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id "org.gradle.java.experimental-jigsaw" version "0.1.1"
+}
+
+javaModule.name = 'org.jid.pipelineutils'
+
+group 'org.jid'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 10
+targetCompatibility = 10
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    useJUnitPlatform()
+
+    // show standard out and standard error of the test JVM(s) on the console
+    testLogging.showStandardStreams = true
+
+    // set heap size for the test JVM(s)
+    // minHeapSize = "4g"
+    // maxHeapSize = "7g"
+}
+
+
+dependencies {
+    
+    testCompile("org.junit.jupiter:junit-jupiter-api:5.3.0")
+    //testCompile("org.junit.jupiter:junit-jupiter-params:5.3.0")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.0")
+}
+
+
