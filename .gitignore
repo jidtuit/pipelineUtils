@@ -1,14 +1,28 @@
+# Gradle
+.gradle
+build/
+out/
+.gradletasknamecache
+
+# IntelliJ project files
+*.iml
+*.iws
+*.ipr
+.idea/
+
+# eclipse project file
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store
+
 # Compiled class file
 *.class
 
 # Log file
 *.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
 
 # Package Files #
 *.jar
