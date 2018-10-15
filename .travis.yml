@@ -1,6 +1,6 @@
 language: java
-
 sudo: false
+install: true
 
 # Avoid uploading cache: https://docs.travis-ci.com/user/languages/java/
 before_cache:
@@ -14,12 +14,12 @@ cache:
 
 
 jdk:
-  - oraclejdk10
+#  - oraclejdk10
   - openjdk10
-  - openjdk11
+#  - openjdk11
 
 
 script:
-  - chmod +x $HOME/gradle/wrapper/gradle-wrapper.jar
-  - $HOME/sonar.sh
+  - chmod +x ./gradle/wrapper/gradle-wrapper.jar
+  - ./sonar.sh
 
