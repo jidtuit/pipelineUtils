@@ -3,7 +3,7 @@
 build/
 out/
 .gradletasknamecache
-!gradle-wrapper.jar
+!gradle-wrapper.jargcam 
 
 # IntelliJ project files
 *.iml
