@@ -19,7 +19,8 @@ jdk:
 #  - openjdk11
 
 before_install:
-  - chmod +x gradlew
+  - chmod a+x gradlew
+  - chmod a+x sonar.sh
 
 script:
   - ./sonar.sh
