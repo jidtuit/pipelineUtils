@@ -20,5 +20,5 @@ jdk:
 
 
 script:
-  - ./sonar.sh=======
+  - ./sonar.sh
 
