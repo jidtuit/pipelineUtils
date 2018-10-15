@@ -1,10 +1,13 @@
 plugins {
+    id 'java'
     id 'java-library'
     id 'java-library-distribution'
-    id "org.gradle.java.experimental-jigsaw" version "0.1.1"
+    id 'jacoco'
+    id 'org.sonarqube' version '2.6.2'
 }
 
-javaModule.name = 'org.jid.pipelineutils'
+
+ext.moduleName = 'org.jid.pipelineutils'
 
 group 'org.jid'
 version '1.0-SNAPSHOT'
@@ -14,17 +17,7 @@ targetCompatibility = 10
 
 repositories {
     mavenCentral()
-}
-
-test {
-    useJUnitPlatform()
-
-    // show standard out and standard error of the test JVM(s) on the console
-    testLogging.showStandardStreams = true
-
-    // set heap size for the test JVM(s)
-    // minHeapSize = "4g"
-    // maxHeapSize = "7g"
+    jcenter()
 }
 
 
@@ -36,8 +29,75 @@ dependencies {
     testCompile("org.junit.jupiter:junit-jupiter-api:5.3.0")
     //testCompile("org.junit.jupiter:junit-jupiter-params:5.3.0")
     testRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.0")
-    
+
     testCompile("org.assertj:assertj-core:3.11.1")
 }
+
+
+compileJava {
+    inputs.property("moduleName", moduleName)
+    doFirst {
+        options.compilerArgs = [
+                '--module-path', classpath.asPath,
+        ]
+        classpath = files()
+    }
+}
+
+
+compileTestJava {
+    inputs.property("moduleName", moduleName)
+    doFirst {
+        options.compilerArgs = [
+                '--module-path', classpath.asPath,
+                '--patch-module', "$moduleName=" + files(sourceSets.test.java.srcDirs).asPath, // add test source files to your module
+
+        ]
+        classpath = files()
+    }
+}
+
+test {
+
+    useJUnitPlatform()
+
+    // show standard out and standard error of the test JVM(s) on the console
+    testLogging.showStandardStreams = true
+
+
+    inputs.property("moduleName", moduleName)
+    doFirst {
+        jvmArgs = [
+                '--module-path', classpath.asPath,
+                '--add-modules', 'ALL-MODULE-PATH', // to resolve all module in the module path to be accessed by gradle test runner
+                '--add-opens', "$moduleName/org.jid.pipelineutils.tests=org.junit.platform.commons",
+                '--patch-module', "$moduleName=" + files(sourceSets.test.java.outputDir).asPath,
+        ]
+        classpath = files()
+    }
+
+}
+
+
+jacocoTestReport {
+   dependsOn 'test'
+}
+
+
+tasks['sonarqube'].with {
+    dependsOn.clear()
+    dependsOn jacocoTestReport
+}
+
+
+jar {
+    inputs.property("moduleName", moduleName)
+    manifest {
+        attributes('Automatic-Module-Name': moduleName)
+    }
+}
+
+
+
 
 

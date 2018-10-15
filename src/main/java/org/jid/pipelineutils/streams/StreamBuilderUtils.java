@@ -12,6 +12,9 @@ import static pl.touk.throwing.ThrowingFunction.unchecked;
 
 public class StreamBuilderUtils {
 
+    private StreamBuilderUtils() {
+    }
+
     /**
      *
      * Read the files line by line
@@ -41,7 +44,7 @@ public class StreamBuilderUtils {
      */
     public static Stream<String> newStreamTraverseFiles(String separator, Path... files) {
 
-        Stream<String> fileStreams[] = Stream.of(files)
+        Stream<String>[] fileStreams = Stream.of(files)
                 .map(unchecked(Files::lines))
                 .toArray(Stream[]::new);
 
