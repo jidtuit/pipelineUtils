@@ -20,6 +20,7 @@ jdk:
 
 before_install:
   - chmod a+x gradlew
+  - chmod a+x gradle/wrapper/gradle-wrapper.jar
   - chmod a+x sonar.sh
 
 script:
