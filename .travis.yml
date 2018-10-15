@@ -20,5 +20,6 @@ jdk:
 
 
 script:
-  - ./sonar.sh
+  - chmod +x $HOME/gradle/wrapper/gradle-wrapper.jar
+  - $HOME/sonar.sh
 
