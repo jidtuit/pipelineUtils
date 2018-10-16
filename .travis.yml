@@ -14,7 +14,7 @@ cache:
 
 
 jdk:
-  - oraclejdk10
+#  - oraclejdk10
   - openjdk10
 #  - openjdk11
 
