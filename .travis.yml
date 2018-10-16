@@ -19,10 +19,9 @@ jdk:
 #  - openjdk11
 
 before_install:
-  - chmod a+x gradlew
-  - chmod a+x gradle/wrapper/gradle-wrapper.jar
-  - chmod a+x sonar.sh
+  - chmod +x gradlew
+  - chmod +x ci-build-script.sh
 
 script:
-  - ./sonar.sh
+  - ./ci-build-script.sh
 
