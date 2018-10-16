@@ -23,5 +23,5 @@ before_install:
   - chmod +x ci-build-script.sh
 
 script:
-  - ci-build-script.sh
+  - ./ci-build-script.sh
 
