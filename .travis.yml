@@ -19,9 +19,9 @@ jdk:
 #  - openjdk11
 
 before_install:
-  - chmod a+x gradlew
-  - chmod a+x gradle/wrapper/gradle-wrapper.jar
-  - chmod a+x sonar.sh
+  - chmod +x gradlew
+  - chmod +x gradle/wrapper/gradle-wrapper.jar
+  - chmod +x sonar.sh
 
 script:
   - ./gradlew clean sonarqube -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.organization=$SONAR_ORGANIZATION -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN -Dsonar.branch.name=$TRAVIS_BRANCH
