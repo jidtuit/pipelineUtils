@@ -2,9 +2,11 @@ package org.jid.pipelineutils.streams;
 
 import org.paumard.streams.StreamsUtils;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -46,7 +48,7 @@ public class StreamBuilderUtils {
     public static Stream<String> newStreamTraverseFiles(String separator, Path... files) {
         Objects.requireNonNull(separator);
         if(files == null || files.length == 0)
-            throw new RuntimeException("ERROR: There must be at least one file as a parameter");
+            throw new PipelineUtilsException("ERROR: There must be at least one file as a parameter");
 
         Stream<String>[] fileStreams = Stream.of(files)
                 .map(unchecked(Files::lines))
@@ -67,10 +69,31 @@ public class StreamBuilderUtils {
      * @param parallelIfPossible: If the file is loadaed in memory then return a parallel stream.
      * @return
      */
-//    public static Stream<String> loadFileToMemoryOrFromDisk(Path path, long maxFileSize, boolean parallelIfPossible) {
-//
-//        Files.
-//
-//    }
+    public static Stream<String> loadFileToMemoryOrFromDisk(Path path, Long maxFileSize, Boolean parallelIfPossible) {
+
+        Objects.requireNonNull(path);
+        long lMaxFileSize = Objects.requireNonNullElse(maxFileSize, 0L);
+        boolean bParallelIfPossible = Objects.requireNonNullElse(parallelIfPossible, false);
+
+        try {
+            long currentFileSize = Files.size(path);
+
+            Stream<String> resp;
+
+            if(currentFileSize < lMaxFileSize) {
+
+                List<String> lines = Files.readAllLines(path);
+                resp = bParallelIfPossible ? lines.parallelStream() : lines.stream();
+
+            } else {
+                resp = Files.lines(path);
+            }
+
+            return resp;
+
+        } catch (IOException e) {
+            throw new PipelineUtilsException(e);
+        }
+    }
 
 }
