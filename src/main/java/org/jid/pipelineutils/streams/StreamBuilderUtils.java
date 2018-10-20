@@ -67,9 +67,9 @@ public class StreamBuilderUtils {
      * @param path: File Path
      * @param maxFileSize: Maximum file size to store it in memory. More than that will be read it from file
      * @param parallelIfPossible: If the file is loadaed in memory then return a parallel stream.
-     * @return
+     * @return an open stream
      */
-    public static Stream<String> loadFileToMemoryOrFromDisk(Path path, Long maxFileSize, Boolean parallelIfPossible) {
+    public static Stream<String> loadFileToMemoryIfSize(Path path, Long maxFileSize, Boolean parallelIfPossible) {
 
         Objects.requireNonNull(path);
         long lMaxFileSize = Objects.requireNonNullElse(maxFileSize, 0L);

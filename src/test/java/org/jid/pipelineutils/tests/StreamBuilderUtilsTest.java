@@ -1,9 +1,12 @@
 package org.jid.pipelineutils.tests;
 
+import org.jid.pipelineutils.streams.PipelineUtilsException;
 import org.jid.pipelineutils.streams.StreamBuilderUtils;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.List;
@@ -91,12 +94,12 @@ class StreamBuilderUtilsTest {
 
 
         assertThatThrownBy(() -> StreamBuilderUtils.newStreamTraverseFiles(separator))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(PipelineUtilsException.class)
                 .hasStackTraceContaining("There must be at least one file as a parameter");
 
 
         assertThatThrownBy(() -> StreamBuilderUtils.newStreamTraverseFiles(separator, emptyFileArray))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(PipelineUtilsException.class)
                 .hasStackTraceContaining("There must be at least one file as a parameter");
 
 
@@ -106,6 +109,107 @@ class StreamBuilderUtilsTest {
 
         assertThatThrownBy(() -> StreamBuilderUtils.newStreamTraverseFiles(separator, filesWithNonExistingFile))
                 .hasRootCauseInstanceOf(NoSuchFileException.class);
+
+    }
+
+
+    @Test
+    void loadFileToMemoryOrFromDisk_OK_FromMemoryInParallel() throws IOException {
+
+        Path file = baseDataDir.resolve("data1.csv");
+        long fileSize = Files.size(file);
+
+        Stream<String> stream = StreamBuilderUtils.loadFileToMemoryIfSize(file, fileSize + 1, true);
+
+        assertThat(stream).isNotNull();
+        assertThat(stream.isParallel()).isTrue();
+        assertThat(stream.count()).isNotZero().isNotNegative();
+
+        stream.close();
+    }
+
+
+    @Test
+    void loadFileToMemoryOrFromDisk_OK_FromMemorySequencial() throws IOException {
+
+        Path file = baseDataDir.resolve("data1.csv");
+        long fileSize = Files.size(file);
+
+        Stream<String> stream = StreamBuilderUtils.loadFileToMemoryIfSize(file, fileSize + 1, false);
+
+        assertThat(stream).isNotNull();
+        assertThat(stream.isParallel()).isFalse();
+        assertThat(stream.count()).isNotZero().isNotNegative();
+
+        stream.close();
+
+    }
+
+
+    @Test
+    void loadFileToMemoryOrFromDisk_OK_FromDiskSequencial() throws IOException {
+
+        Path file = baseDataDir.resolve("data1.csv");
+        long fileSize = Files.size(file);
+
+        Stream<String> stream = StreamBuilderUtils.loadFileToMemoryIfSize(file, fileSize - 1, false);
+
+        assertThat(stream).isNotNull();
+        assertThat(stream.isParallel()).isFalse();
+        assertThat(stream.count()).isNotZero().isNotNegative();
+
+        stream.close();
+    }
+
+
+    @Test
+    void loadFileToMemoryOrFromDisk_OK_FromDiskParallelShouldBeSequencial() throws IOException {
+
+        Path file = baseDataDir.resolve("data1.csv");
+        long fileSize = Files.size(file);
+
+        Stream<String> stream = StreamBuilderUtils.loadFileToMemoryIfSize(file, fileSize - 1, true);
+
+        assertThat(stream).isNotNull();
+        assertThat(stream.isParallel()).isFalse();
+        assertThat(stream.count()).isNotZero().isNotNegative();
+
+        stream.close();
+    }
+
+
+    @Test
+    void loadFileToMemoryOrFromDisk_KO_NullParams() throws IOException {
+
+        Path file = baseDataDir.resolve("data1.csv");
+        long size = Files.size(file);
+
+        Path nonExistingfile = baseDataDir.resolve("nonExistingFile.jid");
+
+
+        assertThatThrownBy(() -> StreamBuilderUtils.loadFileToMemoryIfSize(null, size, true))
+                .isInstanceOf(NullPointerException.class);
+
+        assertThatThrownBy(() -> StreamBuilderUtils.loadFileToMemoryIfSize(nonExistingfile, size, true))
+                .hasRootCauseInstanceOf(NoSuchFileException.class);
+
+
+        Stream<String> s1 = StreamBuilderUtils.loadFileToMemoryIfSize(file, null, true);
+        assertThat(s1).isNotNull();
+        assertThat(s1.isParallel()).isFalse();
+        assertThat(s1.count()).isNotZero().isNotNegative();
+
+
+        Stream<String> s2 = StreamBuilderUtils.loadFileToMemoryIfSize(file, null, false);
+        assertThat(s2).isNotNull();
+        assertThat(s2.isParallel()).isFalse();
+        assertThat(s2.count()).isNotZero().isNotNegative();
+
+
+        Stream<String> s3 = StreamBuilderUtils.loadFileToMemoryIfSize(file, size + 1, null);
+        assertThat(s3).isNotNull();
+        assertThat(s3.isParallel()).isFalse();
+        assertThat(s3.count()).isNotZero().isNotNegative();
 
     }
 
