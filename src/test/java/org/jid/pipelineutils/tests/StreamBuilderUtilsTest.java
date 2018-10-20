@@ -198,19 +198,19 @@ class StreamBuilderUtilsTest {
         assertThat(s1).isNotNull();
         assertThat(s1.isParallel()).isFalse();
         assertThat(s1.count()).isNotZero().isNotNegative();
-
+        s1.close();
 
         Stream<String> s2 = StreamBuilderUtils.loadFileToMemoryIfSize(file, null, false);
         assertThat(s2).isNotNull();
         assertThat(s2.isParallel()).isFalse();
         assertThat(s2.count()).isNotZero().isNotNegative();
-
+        s2.close();
 
         Stream<String> s3 = StreamBuilderUtils.loadFileToMemoryIfSize(file, size + 1, null);
         assertThat(s3).isNotNull();
         assertThat(s3.isParallel()).isFalse();
         assertThat(s3.count()).isNotZero().isNotNegative();
-
+        s3.close();
     }
 
 }
