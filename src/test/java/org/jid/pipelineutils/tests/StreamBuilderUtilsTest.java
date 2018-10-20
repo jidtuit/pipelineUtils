@@ -98,6 +98,11 @@ class StreamBuilderUtilsTest {
                 .hasStackTraceContaining("There must be at least one file as a parameter");
 
 
+        assertThatThrownBy(() -> StreamBuilderUtils.newStreamTraverseFiles(separator, null))
+                .isInstanceOf(PipelineUtilsException.class)
+                .hasStackTraceContaining("There must be at least one file as a parameter");
+
+
         assertThatThrownBy(() -> StreamBuilderUtils.newStreamTraverseFiles(separator, emptyFileArray))
                 .isInstanceOf(PipelineUtilsException.class)
                 .hasStackTraceContaining("There must be at least one file as a parameter");

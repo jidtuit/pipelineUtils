@@ -6,10 +6,6 @@ public class PipelineUtilsException extends RuntimeException{
         super(message);
     }
 
-    public PipelineUtilsException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public PipelineUtilsException(Throwable cause) {
         super(cause);
     }
