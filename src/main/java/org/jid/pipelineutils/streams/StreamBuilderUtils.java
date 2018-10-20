@@ -5,6 +5,7 @@ import org.paumard.streams.StreamsUtils;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,6 +44,9 @@ public class StreamBuilderUtils {
      * @return Stream of Strings linked between them with the separator.
      */
     public static Stream<String> newStreamTraverseFiles(String separator, Path... files) {
+        Objects.requireNonNull(separator);
+        if(files == null || files.length == 0)
+            throw new RuntimeException("ERROR: There must be at least one file as a parameter");
 
         Stream<String>[] fileStreams = Stream.of(files)
                 .map(unchecked(Files::lines))
@@ -52,5 +56,21 @@ public class StreamBuilderUtils {
                 .map(stream -> stream.collect(Collectors.joining(separator)))
                 .onClose(() -> Arrays.stream(fileStreams).forEach(Stream::close));
     }
+
+
+    /**
+     *  Checks the size of the file and if it is less than the maxFileSize param then it will load it in memory
+     *  so it can be accessed faster and process in parallel if necessary.
+     *
+     * @param path: File Path
+     * @param maxFileSize: Maximum file size to store it in memory. More than that will be read it from file
+     * @param parallelIfPossible: If the file is loadaed in memory then return a parallel stream.
+     * @return
+     */
+//    public static Stream<String> loadFileToMemoryOrFromDisk(Path path, long maxFileSize, boolean parallelIfPossible) {
+//
+//        Files.
+//
+//    }
 
 }

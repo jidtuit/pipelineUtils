@@ -4,12 +4,14 @@ import org.jid.pipelineutils.streams.StreamBuilderUtils;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.FileSystems;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class StreamBuilderUtilsTest {
 
@@ -72,6 +74,36 @@ class StreamBuilderUtilsTest {
 
         assertThat(resultList.get(3))
                 .isEqualTo("value1-1-3;value1-2-3;value1-3-3;");
+    }
+
+
+    @Test
+    void newStreamTraverseFiles_KO_nullParams() {
+
+        String separator = ",";
+
+        Path[] filesWithoutNull = {baseDataDir.resolve("data1.csv"), baseDataDir.resolve("data2.csv")};
+        Path[] filesWithNull = {baseDataDir.resolve("data1.csv"), null, baseDataDir.resolve("data2.csv")};
+        Path[] emptyFileArray = {};
+        Path[] filesWithNonExistingFile = {baseDataDir.resolve("data1.csv"), baseDataDir.resolve("notExistingFile.csv")};
+
+        assertThatThrownBy(() -> StreamBuilderUtils.newStreamTraverseFiles(null, filesWithoutNull))
+                .isInstanceOf(NullPointerException.class);
+
+        assertThatThrownBy(() -> StreamBuilderUtils.newStreamTraverseFiles(separator, null))
+                .isInstanceOf(RuntimeException.class)
+                .hasStackTraceContaining("There must be at least one file as a parameter");
+
+        assertThatThrownBy(() -> StreamBuilderUtils.newStreamTraverseFiles(separator, emptyFileArray))
+                .isInstanceOf(RuntimeException.class)
+                .hasStackTraceContaining("There must be at least one file as a parameter");
+
+        assertThatThrownBy(() -> StreamBuilderUtils.newStreamTraverseFiles(separator, filesWithNull))
+                .hasRootCauseInstanceOf(NullPointerException.class);
+
+        assertThatThrownBy(() -> StreamBuilderUtils.newStreamTraverseFiles(separator, filesWithNonExistingFile))
+                .hasRootCauseInstanceOf(NoSuchFileException.class);
+
     }
 
 }
