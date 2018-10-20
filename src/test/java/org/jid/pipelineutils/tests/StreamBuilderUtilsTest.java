@@ -46,7 +46,6 @@ class StreamBuilderUtilsTest {
         assertThat(resultList.get(3))
                 .isEqualTo("value1-1-3;value1-2-3;value1-3-3;value2-1-3;value2-2-3;value2-3-3;value3-1-3;value3-2-3;value3-3-3");
 
-        //TODO: Test if the file is locked or unlocked -> Apache Commons io FileUtils.touch()??
     }
 
 
@@ -90,16 +89,20 @@ class StreamBuilderUtilsTest {
         assertThatThrownBy(() -> StreamBuilderUtils.newStreamTraverseFiles(null, filesWithoutNull))
                 .isInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> StreamBuilderUtils.newStreamTraverseFiles(separator, null))
+
+        assertThatThrownBy(() -> StreamBuilderUtils.newStreamTraverseFiles(separator))
                 .isInstanceOf(RuntimeException.class)
                 .hasStackTraceContaining("There must be at least one file as a parameter");
+
 
         assertThatThrownBy(() -> StreamBuilderUtils.newStreamTraverseFiles(separator, emptyFileArray))
                 .isInstanceOf(RuntimeException.class)
                 .hasStackTraceContaining("There must be at least one file as a parameter");
 
+
         assertThatThrownBy(() -> StreamBuilderUtils.newStreamTraverseFiles(separator, filesWithNull))
                 .hasRootCauseInstanceOf(NullPointerException.class);
+
 
         assertThatThrownBy(() -> StreamBuilderUtils.newStreamTraverseFiles(separator, filesWithNonExistingFile))
                 .hasRootCauseInstanceOf(NoSuchFileException.class);
