@@ -15,8 +15,8 @@ cache:
 
 jdk:
 #  - oraclejdk10
-  - openjdk10
-#  - openjdk11
+#  - openjdk10
+  - openjdk11
 
 before_install:
   - chmod +x gradlew
